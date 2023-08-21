@@ -1,0 +1,14 @@
+{
+    email contact@domain.com
+}
+
+http://domain.com {
+    redir https://domain.com{uri}
+}
+
+https://domain.com {
+    tls {
+        dns cloudflare
+    }
+    reverse_proxy http://wordpress:8080
+}
