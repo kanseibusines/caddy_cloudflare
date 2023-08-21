@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  cloudflocaddy:
+    container_name: cloudflocaddy
+    image: caddy:latest
+    environment:
+      CLOUDFLARE_API_TOKEN: api_key
+      DOMAIN: domain.com
+      PORT: 8080
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile:ro
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2019:2019"
+    networks:
+      - bridge
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - bridge
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress:latest
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_USER: 
+      WORDPRESS_DB_PASSWORD: 
+      WORDPRESS_DB_NAME: 
+    depends_on:
+      - mariadb
+    ports:
+      - "8080:80"
+    networks:
+      - bridge
+
+volumes:
+  mariadb_data:
+
+networks:
+  bridge:
+    driver: bridge
